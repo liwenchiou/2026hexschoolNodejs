@@ -95,4 +95,4 @@ const server = http.createServer((req, res) => {
     errorHandle(res, "路由錯誤", 404);
   }
 });
-server.listen(8080);
+server.listen(process.env.PORT || 8080);
