@@ -31,7 +31,7 @@ const server = http.createServer((req, res) => {
     //取得在陣列的那個位置
     const index = todos.findIndex((element) => element.id == id); //如果不等於-1 就表示存在
     console.log(index);
-    if (id !== undefined && index > -1) {
+    if (id !== undefined && id !== "" && index > -1) {
       todos.splice(index, 1);
       successHandle(res, todos);
     } else {
@@ -45,14 +45,14 @@ const server = http.createServer((req, res) => {
         const data = JSON.parse(body);
         console.log(data.title); // 這樣就能正確印出 "qwe" 囉！
 
-        if (data.title !== undefined) {
+        if (data.title !== undefined && typeof data.title === 'string' && data.title.trim() !== "") {
           // 2. 這裡可以進行新增到 todos 陣列的動作
-          todos.push({ title: data.title, id: uuidv4() });
+          todos.push({ title: data.title.trim(), id: uuidv4() });
 
           // 3. 確保「資料處理完」後，才回傳成功訊息 (要放進 on('end') 裡面)
           successHandle(res, todos);
         } else {
-          errorHandle(res, "title 欄位未填寫");
+          errorHandle(res, "title 欄位未填寫或格式不正確");
         }
       } catch (error) {
         // 萬一解析失敗 (例如傳錯格式)，就回傳錯誤
@@ -73,8 +73,8 @@ const server = http.createServer((req, res) => {
         //取得在陣列的那個位置
         const index = todos.findIndex((element) => element.id == id); //如果不等於-1 就表示存在
         console.log(index);
-        if (data.title !== undefined && id !== undefined && index > -1) {
-          todos[index].title=data.title;
+        if (data.title !== undefined && typeof data.title === 'string' && data.title.trim() !== "" && id !== undefined && id !== "" && index > -1) {
+          todos[index].title = data.title.trim();
           successHandle(res, todos);
         } else if (index === -1) {
           errorHandle(res, "找不到該筆待辦事項", 404);
